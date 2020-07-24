@@ -101,7 +101,8 @@ const makeTrip = async(res, userName, startLocation, destination, purpose, weath
 		isApproved: false,
 		isNew: true,
 		comments: '',
-		weather: weather
+		weather: weather,
+		timeMade: Date.now()
 	}
 	var username = await db.find('Users', {userName: userName});
 	if(username.Results.length <= 0)
@@ -182,6 +183,7 @@ const listTripsByUser = async(res, userName) =>
 	else
 	{
 		results = await db.find('Trips', {userId: id.ObjectId(userId.Results)});
+		results.Results.sort((a, b) => (a.timeMade < b.timeMade) ? 1 : -1);
 	}
 
 	db.sendjson(res, results);
@@ -198,6 +200,7 @@ const listTripsByAdmin = async(res, userName) =>
 	else
 	{
 		results = await db.find('Trips', {adminId: id.ObjectId(userId.Results)});
+		results.Results.sort((a, b) => (a.timeMade < b.timeMade) ? 1 : -1);
 	}
 
 	db.sendjson(res, results);
